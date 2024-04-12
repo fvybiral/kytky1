@@ -9,7 +9,7 @@ class Encyklopedie extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['input', 'normalized_input'];
+    protected $fillable = ['input', 'normalized_input', 'name', 'addition'];
 
     /**
      * The table associated with the model.

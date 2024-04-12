@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('encyklopedie', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('nomenklaturaid')->nullable();
             $table->string('input');
-            $table->string('normalized_input'); // slug, serazeny abecedne
+            $table->string('normalized_input');
             $table->string('name')->nullable();
             $table->string('addition')->nullable();
             $table->timestamps();
+            $table->unique(['input']);
         });
     }
 

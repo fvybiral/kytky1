@@ -14,12 +14,10 @@ return new class extends Migration
         Schema::create('kytka', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('souborid');
+            $table->integer('nomenklaturaid')->nullable();
+            $table->integer('encyklopedieid')->nullable();
             $table->string('input');
             $table->string('normalized_input');
-            $table->string('match_score');
-            $table->integer('encyklopedieid')->nullable();
-            $table->string('name');
-            $table->string('addition');
             $table->timestamps();
         });
     }

@@ -61,7 +61,7 @@
                                         {{ $soubor->lines_count ?? '-' }}
                                     </td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm @if ($soubor->progress == 100) text-green-600 @else text-gray-500 @endif">
-                                        {{ $soubor->progress ?? 0 }}%
+                                        {{ $soubor->progress ?? 0 }}% ({{ $soubor->lines_count - round($soubor->progress * $soubor->lines_count / 100) }})
                                     </td>
                                     <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 text-nowrap">
                                         <a href="{{ url('soubory/' . $soubor->id) }}"

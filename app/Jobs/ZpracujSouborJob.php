@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Models\Encyklopedie;
 use App\Models\Kytka;
+use App\Models\Nomenklatura;
 use App\Models\Soubor;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,6 +13,7 @@ use Illuminate\Queue\Attributes\WithoutRelations;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use \Str;
+use \DB;
 
 class ZpracujSouborJob implements ShouldQueue
 {
@@ -31,14 +34,6 @@ class ZpracujSouborJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $this->upload();
-    }
-
-    /**
-     * @return void
-     */
-    private function upload(): void
-    {
         $skipHeader = true;
         $rows = 0;
         $filename = storage_path('app/' . $this->soubor->storage_path);
@@ -51,24 +46,13 @@ class ZpracujSouborJob implements ShouldQueue
                 if (!empty($data)) {
                     $rows++;
                     $kytka = new Kytka();
-                    $kytka->souborid = $this->soubor->id;
                     $kytka->input = $data[0];
-                    $prepared = $data[0];
-//                    $prepared = str_replace("#×#", ' x ', $data[0]);
-//                    $prepared = preg_replace("#[\s\.\-\:]+#", ' ', $prepared);
-                    $kytka->normalized_input = collect(explode(' ', $prepared))
-                        ->map(function ($word) {
-                            if (in_array($word,['×','+','×','x'])) {
-                                return $word;
-                            }
-                            return trim(mb_strtolower(Str::ascii($word)));
-                        })
-                        ->filter(function ($word) {
-                            return $word !== '' && $word !== ' ' && $word !== null;
-                        })
-//                        ->sort()
-                        ->join('-');
-                    $kytka->match_score = null;
+                    $kytka->souborid = $this->soubor->id;
+                    $normalize = $this->normalize($data[0]);
+                    $kytka->normalized_input = $normalize;
+                    $kytka->nomenklaturaid = DB::table('nomenklatura')
+                        ->where('normalized_name', '=', $normalize)
+                        ->value('id');
                     $kytka->save();
                 }
             }
@@ -79,6 +63,39 @@ class ZpracujSouborJob implements ShouldQueue
         $this->soubor->state = 'IMPORTED';
         $this->soubor->save();
 
-        SparujSouborSEncyklopediiJob::dispatch($this->soubor);
+        $kytky = Kytka::where('souborid', $this->soubor->id)->whereNull('nomenklaturaid')->get();
+        foreach ($kytky as $kytka) {
+            $encyklopedie = Encyklopedie::where('normalized_input', $kytka->normalized_input)->first();
+            if (!$encyklopedie) {
+                $encyklopedie = Encyklopedie::create([
+                    'input' => $kytka->input,
+                    'normalized_input' => $kytka->normalized_input,
+                ]);
+            }
+            $kytka->encyklopedieid = $encyklopedie->id;
+            $kytka->save();
+        }
+
+        $this->soubor->state = 'PAIRED';
+        $this->soubor->save();
+    }
+
+    /**
+     * @param mixed $prepared
+     * @return string
+     */
+    private function normalize(mixed $prepared): string
+    {
+        return collect(explode(' ', $prepared))
+            ->map(function ($word) {
+                if (in_array($word, ['×', '+', '×', 'x'])) {
+                    return $word;
+                }
+                return trim(mb_strtolower(preg_replace('#\s+#',' ', $word)));
+            })
+            ->filter(function ($word) {
+                return $word !== '' && $word !== ' ' && $word !== null;
+            })
+            ->join(' ');
     }
 }

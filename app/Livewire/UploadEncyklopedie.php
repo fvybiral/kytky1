@@ -2,15 +2,13 @@
 
 namespace App\Livewire;
 
-use App\Jobs\ZpracujSouborJob;
-use App\Models\Kytka;
+use App\Models\Encyklopedie;
 use App\Models\Nomenklatura;
-use App\Models\Soubor;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Str;
+use \Str;
 
-class UploadNomenklatura extends Component
+class UploadEncyklopedie extends Component
 {
     use WithFileUploads;
 
@@ -18,7 +16,7 @@ class UploadNomenklatura extends Component
 
     public function render()
     {
-        return view('livewire.upload-nomenklatura');
+        return view('livewire.upload-encyklopedie');
     }
 
     public function save()
@@ -27,7 +25,7 @@ class UploadNomenklatura extends Component
             'soubor' => 'required|max:102400|mimes:csv,txt', // 100MB Max
         ]);
 
-        $file_path = $this->soubor->store('nomenklatura');
+        $file_path = $this->soubor->store('encyklopedie');
 
         $skipHeader = true;
         $rows = 0;
@@ -38,16 +36,17 @@ class UploadNomenklatura extends Component
                     $skipHeader = false;
                     continue;
                 }
-                if (!empty($data)) {
-                    $nomenklatura = Nomenklatura::where('name', $data[0])->first();
 
-                    if (!$nomenklatura) {
-                        $rows++;
+                if (!empty($data)) {
+                    $encyklopedie = Encyklopedie::where('input', $data[0])->first();
+
+                    if (!$encyklopedie) {
                         try {
-                            $prepared = $data[0];
-                            Nomenklatura::create([
-                                'name' => $data[0],
-                                'normalized_name' => collect(explode(' ', $prepared))
+                            $rows++;
+                            $prepared = trim($data[0]);
+                            $encyklopedie = Encyklopedie::create([
+                                'input' => $prepared,
+                                'normalized_input' => collect(explode(' ', $prepared))
                                     ->map(function ($word) {
                                         if (in_array($word,['×','+','×','x'])) {
                                             return $word;
@@ -58,11 +57,25 @@ class UploadNomenklatura extends Component
                                         return $word !== '' && $word !== ' ' && $word !== null;
                                     })
                                     ->join(' '),
+                                'name' => empty($data[1]) ? null : $data[1],
+                                'addition' => empty($data[2]) ? null : $data[2],
                             ]);
                         }
                         catch (\Exception $e){
-                            logger()->error('Nomenklatura: '.$data[0]);
+                            logger()->error($e);
                         }
+                    }
+                    else {
+                        $encyklopedie->name = empty($data[1]) ? null : $data[1];
+                        $encyklopedie->addition = empty($data[2]) ? null : $data[2];
+                        $encyklopedie->save();
+                    }
+
+                    $nomenklatura = Nomenklatura::where('normalized_name', $encyklopedie->normalized_input)->first();
+
+                    if ($nomenklatura) {
+                        $encyklopedie->name = $nomenklatura->name;
+                        $encyklopedie->save();
                     }
                 }
             }
@@ -71,6 +84,6 @@ class UploadNomenklatura extends Component
 
         flash()->success('Importováno '.$rows.' nových záznamů');
 
-        return $this->redirect('/nomenklatura');
+        return $this->redirect('/encyklopedie');
     }
 }

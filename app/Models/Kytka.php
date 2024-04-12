@@ -26,4 +26,12 @@ class Kytka extends Model
     {
         return $this->hasOne(Encyklopedie::class, 'id', 'encyklopedieid');
     }
+
+    /**
+     * Get the phone associated with the user.
+     */
+    public function nomenklatura(): HasOne
+    {
+        return $this->hasOne(Nomenklatura::class, 'id', 'nomenklaturaid');
+    }
 }
