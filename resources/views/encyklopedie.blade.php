@@ -20,13 +20,13 @@
                 <x-button-link class="ml-2" href="{{url('encyklopedie-stahnout')}}">
                     Stáhnout slovník s opravami
                 </x-button-link>
-                <button
-                    type="button"
-                    class="ml-2 block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    @click="upload=true"
-                >
-                    Import
-                </button>
+{{--                <button--}}
+{{--                    type="button"--}}
+{{--                    class="ml-2 block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"--}}
+{{--                    @click="upload=true"--}}
+{{--                >--}}
+{{--                    Import--}}
+{{--                </button>--}}
             </div>
         </div>
         <div class="mt-8 flow-root">
