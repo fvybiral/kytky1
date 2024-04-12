@@ -18,7 +18,7 @@
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none flex items-center text-nowrap">
                 <x-button-link class="ml-2" href="{{url('encyklopedie-stahnout')}}">
-                    Stáhnout slovník s opravami
+                    Stáhnout překladový slovník
                 </x-button-link>
 {{--                <button--}}
 {{--                    type="button"--}}
