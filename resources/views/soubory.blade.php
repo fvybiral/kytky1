@@ -30,7 +30,8 @@
                             <thead class="bg-gray-50">
                             <tr>
                                 <th scope="col"
-                                    class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Stav
+                                    class="py-3.5 py-4 text-left text-sm font-semibold text-gray-900 text-center">
+                                    Stav
                                 </th>
                                 <th scope="col"
                                     class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Název
@@ -49,7 +50,8 @@
                             <tbody class="divide-y divide-gray-200 bg-white">
                             @foreach ($soubory as $soubor)
                                 <tr>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $soubor->state }}
+                                    <td class="whitespace-nowrap px-3 py-4 text-center text-sm @if ($soubor->progress == 100) bg-green-500  text-white @else text-gray-500 @endif">
+                                        {{ $soubor->state }}
                                     </td>
                                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                         <a href="{{ url('soubory/' . $soubor->id) }}"

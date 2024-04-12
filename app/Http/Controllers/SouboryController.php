@@ -31,6 +31,9 @@ class SouboryController extends Controller
                 ->whereNotNull('nomenklaturaid')
                 ->count();
             $soubor->progress = $total > 0 ? round(($encyklopedie + $nomenklatura) / $total * 100, 2) : 0;
+            if ($soubor->progress === 10) {
+                $soubor->status = 'DONE';
+            }
             $soubor->save();
         }
 
