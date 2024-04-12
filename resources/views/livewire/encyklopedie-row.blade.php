@@ -9,7 +9,7 @@
             @endif
         </td>
         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $zaznam->addition }}</td>
-        <td class="whitespace-nowrap px-3 py-4 text-indigo-600 text-center text-sm font-medium">
+        <td class="whitespace-nowrap px-3 py-4 text-orange-600 text-right text-sm font-medium sm:pr-6">
             <button
                 wire:click="fix"
             >
@@ -41,7 +41,7 @@
             <input wire:model.live="addition" class="@if($addition) border-green-500 @endif"/>
         </td>
         <td
-            class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 text-center">
+            class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
             <button
                 wire:click="save"
                 class="@if (!$selected) text-gray-400 @else text-indigo-600 hover:text-indigo-900 @endif"
