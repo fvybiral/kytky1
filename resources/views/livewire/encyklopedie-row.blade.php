@@ -1,0 +1,47 @@
+<tr>
+    @if($zaznam->name)
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $zaznam->input }}</td>
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $zaznam->name }}</td>
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $zaznam->addition }}</td>
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $zaznam->description }}</td>
+    @else
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $zaznam->input }}</td>
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-black">
+            <input wire:model.live="query" class="@if($selected) border-green-500 @endif"/>
+            @if($selected)
+                <button type="button" wire:click="select(null)" class="rounded-full w-7 bg-indigo-600 p-1 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                   X
+                </button>
+            @endif
+            @if($result && !$selected)
+                <div class="absolute shadow min-w-80 bg-white p-2 max-h-64 overflow-y-auto">
+                    @foreach ($result as $row)
+                        <div wire:click="select({{$row->id}})" class="hover:bg-gray-100 p-2 group flex items-center justify-between cursor-pointer">
+                            <span>{{ $row->name }}</span>
+                            <button type="button" class="hidden group-hover:inline-block rounded bg-white px-2 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">nastavit</button>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </td>
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <input wire:model.live="addition" class="@if($addition) border-green-500 @endif"/>
+        </td>
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $zaznam->description }}</td>
+        <td
+            class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+            <button
+                wire:click="save"
+                class="@if (!$selected) text-gray-400 @else text-indigo-600 hover:text-indigo-900 @endif"
+                @if (!$selected) disabled @endif
+            >
+                Uložit
+                <span class="sr-only">Uložit</span>
+            </button>
+            <button wire:click="cancel" wire:confirm="Určitě?" class="text-indigo-600 hover:text-indigo-900">
+                Nastavit XXX
+                <span class="sr-only">Zrušit</span>
+            </button>
+        </td>
+    @endif
+</tr>
