@@ -19,7 +19,10 @@ class EncyklopedieController extends Controller
     {
         return view('encyklopedie', [
             'tab' => 'unpaired',
-            'encyklopedie' => Encyklopedie::orderBy('input')->whereNull('nomenklaturaid')->paginate(50),
+            'encyklopedie' => Encyklopedie::orderBy('input')
+                ->whereNull('nomenklaturaid')
+                ->whereNull('name')
+                ->paginate(50),
         ]);
     }
 
