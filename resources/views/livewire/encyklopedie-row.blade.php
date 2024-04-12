@@ -1,7 +1,13 @@
 <tr>
     @if($zaznam->nomenklaturaid || $zaznam->name == 'XXX')
         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $zaznam->input }}</td>
-        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $zaznam->name }}</td>
+        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            @if($zaznam->name == 'XXX')
+                <span class="bg-red-500 text-white rounded text-xs py-1 px-2">{{ $zaznam->name }}</span>
+            @else
+                {{ $zaznam->name }}
+            @endif
+        </td>
         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $zaznam->addition }}</td>
         <td class="whitespace-nowrap px-3 py-4 text-indigo-600 text-center text-sm font-medium">
             <button
